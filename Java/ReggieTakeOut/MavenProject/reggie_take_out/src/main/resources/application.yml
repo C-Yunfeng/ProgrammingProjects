@@ -12,6 +12,7 @@ spring:
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    # 注意了，并不是所有MP版本都默认开启驼峰命名规则，所以为了避免出现问题，建议手动设置开启。
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
