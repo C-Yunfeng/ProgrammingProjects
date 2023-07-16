@@ -64,4 +64,11 @@ public class EmployeeController {
         return R.success(emp);
     }
     // session跟token是完全不同的东西  实际开发中一般都是用redis存放token
+
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        // 1.清理session的ID
+        request.getSession().removeAttribute("employee");
+        return R.success("推出成功");
+    }
 }
