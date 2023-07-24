@@ -31,7 +31,6 @@ public class LoginCheckFilter implements Filter  {
         String requestURI = request.getRequestURI();
 
         // 2.判断是否需要处理
-        System.out.println("22222");
         String[] urls = new String[]{
                 "/employee/login",
                 "/employee/logout",
@@ -41,7 +40,6 @@ public class LoginCheckFilter implements Filter  {
         boolean check= checkURI(urls, requestURI);
 
         // 3.若不处理则放行
-        System.out.println("33333");
         if (check){
             filterChain.doFilter(request,response);
             return;
@@ -49,14 +47,12 @@ public class LoginCheckFilter implements Filter  {
 
         // 4.判断是否登陆,若登陆则放行
         // 注意，这个只是演示，开发中要校验session是否合法，而不是简单判断是否为null
-        System.out.println("44444");
         if(request.getSession().getAttribute("employee")!=null){
             filterChain.doFilter(request,response);
             return;
         }
 
         // 5.未登陆则返回未登陆结果，通过输出流向客户端页面响应数据
-        System.out.println("55555");
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
         return;
     }
