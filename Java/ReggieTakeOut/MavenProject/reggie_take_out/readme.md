@@ -26,3 +26,13 @@
 ##### 启用禁用
 
 ##### 编辑员工
+
+## Day3
+##### 公共字段填充
+知识:
+1. 客户端每发一个http请求, 服务端会新增一个线程处理
+2. Thread为每个线程提供一个独立的空间
+
+TODO:
+- [ ] 将httpservletrequest注入就能在metaObjectHandler里获取session对象?
+- [ ] ThreadLocal里加一个remove放置内存泄漏?

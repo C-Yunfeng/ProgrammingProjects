@@ -1,6 +1,7 @@
 package com.itheima.reggie.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.itheima.reggie.common.BaseContext;
 import com.itheima.reggie.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -48,13 +49,15 @@ public class LoginCheckFilter implements Filter  {
         // 4.判断是否登陆,若登陆则放行
         // 注意，这个只是演示，开发中要校验session是否合法，而不是简单判断是否为null
         if(request.getSession().getAttribute("employee")!=null){
+            Long empId = (Long) request.getSession().getAttribute("employee");
+            BaseContext.setCurrentId(empId);
+
             filterChain.doFilter(request,response);
             return;
         }
 
         // 5.未登陆则返回未登陆结果，通过输出流向客户端页面响应数据
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
-        return;
     }
 
     /**
