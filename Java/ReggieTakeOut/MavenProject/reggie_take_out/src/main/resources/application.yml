@@ -18,3 +18,5 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: ASSIGN_ID
+reggie:
+  file-dir: /Users/chenyunfeng/Github_Pj/ProgrammingProjects/Java/ReggieTakeOut/MavenProject/reggie_take_out/home/images/upload/
