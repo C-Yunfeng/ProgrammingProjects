@@ -9,6 +9,7 @@ import com.itheima.reggie.entity.Setmeal;
 import com.itheima.reggie.service.CategoryService;
 import com.itheima.reggie.service.SetmealDishService;
 import com.itheima.reggie.service.SetmealService;
+import com.sun.org.apache.xerces.internal.impl.xpath.XPath;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +86,17 @@ public class SetmealController {
         setmealDtoPage.setRecords(list);
 
         return R.success(setmealDtoPage);
+    }
+
+    /**
+     * 删除套餐
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids){
+        log.info("删除id为:{}",ids);
+
+        setmealService.removeWithDish(ids);
+
+        return R.success("套餐删除成功");
     }
 }
