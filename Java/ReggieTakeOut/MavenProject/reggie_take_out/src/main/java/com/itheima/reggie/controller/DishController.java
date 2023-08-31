@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -107,6 +108,17 @@ public class DishController {
         log.info("新增菜品");
 
         dishService.updateWithFlavor(dishDto);
+
+        // 清理所有缓存的菜品缓存
+        // Set keys = redisTemplate.keys("dish_*");
+        // redisTemplate.delete(keys);
+
+        // 清理某个分类下的菜品缓存
+        // TODO: 从一个菜品改成另一个时，会有问题：只会清原有菜品的缓存，新菜品的无法清理
+        Long categoryId = dishDto.getCategoryId();
+        String keyName = "dish_" + categoryId + "*";
+        Set keys = redisTemplate.keys(keyName);
+        redisTemplate.delete(keys);
 
         return R.success("修改菜品成功");
     }
