@@ -7,6 +7,7 @@ import com.itheima.reggie.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.itheima.reggie.utils.SMSUtils;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @PostMapping("/sendMsg")
     public R<String> sendMsg(@RequestBody User user, HttpSession session){
@@ -42,7 +47,10 @@ public class UserController {
             // SendSms.main();
 
             // 将生成的验证码保存到session
-            session.setAttribute(phone,code);
+            // session.setAttribute(phone,code);
+
+            // 将验证码存储到redis中,限时5分钟
+            redisTemplate.opsForValue().set(phone,code,5, TimeUnit.MINUTES);
 
             return R.success("验证码发送成功");
         }
@@ -67,7 +75,10 @@ public class UserController {
         String code = map.get("code").toString();
 
         // 从Session中获取保存的验证码
-        Object codeInSession = session.getAttribute(phone);
+        // Object codeInSession = session.getAttribute(phone);
+
+        // 从redis中获取验证码
+        Object codeInSession = redisTemplate.opsForValue().get(phone);
 
         // 若验证码比对成功,则登陆成功
         if(codeInSession !=null && codeInSession.equals(code)){
@@ -83,6 +94,10 @@ public class UserController {
             }
             // 如果不加，登陆后退回登陆页面，因为被拦截了
             session.setAttribute("user",user.getId());
+
+            // 若登陆成功,则删除验证码
+            redisTemplate.delete(phone);
+
             return R.success(user);
         }
 
